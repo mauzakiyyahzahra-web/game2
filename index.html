@@ -1,0 +1,1140 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dunia Bermain & Belajar PAUD - 20 Game Edukasi</title>
+    <!-- Menggunakan Tailwind CSS untuk tata letak responsif -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font ramah anak dari Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: linear-gradient(180deg, #7DD3FC 0%, #BAE6FD 55%, #86EFAC 55%, #4ADE80 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        h1, h2, h3, .font-fredoka {
+            font-family: 'Fredoka', sans-serif;
+        }
+
+        /* Gaya Tombol 3D Ramah Anak */
+        .btn-kid {
+            transition: all 0.15s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 6px 0 rgba(0, 0, 0, 0.2);
+        }
+        .btn-kid:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 9px 0 rgba(0, 0, 0, 0.2);
+        }
+        .btn-kid:active {
+            transform: translateY(4px) scale(0.98);
+            box-shadow: 0 2px 0 rgba(0, 0, 0, 0.2);
+        }
+
+        /* Animasi Awan & Mengambang */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        .animate-float {
+            animation: float 3.5s ease-in-out infinite;
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0.5); opacity: 0; }
+            80% { transform: scale(1.08); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .animate-pop {
+            animation: popIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-10px); }
+            40%, 80% { transform: translateX(10px); }
+        }
+        .animate-shake {
+            animation: shake 0.4s ease-in-out;
+        }
+
+        /* Efek Siluet Bayangan untuk Game 15 */
+        .silhouette {
+            filter: brightness(0) invert(0.15);
+            text-shadow: none !important;
+        }
+
+        /* Kanvas Konfeti */
+        #confetti-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+        }
+    </style>
+</head>
+<body class="relative pb-12">
+
+    <!-- Kanvas Efek Konfeti -->
+    <canvas id="confetti-canvas"></canvas>
+
+    <!-- Dekorasi Latar Alam Ceria -->
+    <div class="fixed top-6 left-6 text-6xl opacity-80 pointer-events-none animate-float hidden sm:block">☀️</div>
+    <div class="fixed top-12 right-12 text-5xl opacity-75 pointer-events-none animate-float hidden md:block" style="animation-delay: 1s;">☁️</div>
+    <div class="fixed top-28 left-1/4 text-4xl opacity-60 pointer-events-none animate-float hidden lg:block" style="animation-delay: 2s;">☁️</div>
+
+    <!-- HEADER UTAMA -->
+    <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md shadow-md border-b-4 border-amber-300 px-4 py-3">
+        <div class="max-w-6xl mx-auto flex flex-wrap items-center justify-between gap-3">
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center text-3xl shadow-inner text-white">
+                    🎈
+                </div>
+                <div>
+                    <h1 class="text-xl sm:text-2xl md:text-3xl font-bold text-sky-700 leading-tight">
+                        Dunia Bermain & Belajar PAUD
+                    </h1>
+                    <p class="text-xs sm:text-sm font-bold text-emerald-600">20 Game Edukasi Ceria untuk Anak</p>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-2 sm:gap-3">
+                <!-- Penghitung Bintang Total -->
+                <div class="bg-amber-100 border-2 border-amber-400 px-3 py-1.5 rounded-2xl flex items-center gap-1.5 shadow-sm">
+                    <span class="text-2xl">⭐</span>
+                    <span id="total-stars" class="font-fredoka text-lg sm:text-xl font-bold text-amber-700">0 / 20</span>
+                </div>
+
+                <!-- Tombol Suara -->
+                <button id="btn-sound" onclick="toggleSound()" class="btn-kid bg-sky-500 hover:bg-sky-600 text-white px-3.5 py-2 rounded-2xl font-bold flex items-center gap-1.5 text-sm sm:text-base border-2 border-sky-300" title="Hidupkan/Matikan Suara">
+                    <span id="sound-icon" class="text-xl">🔊</span>
+                    <span class="hidden sm:inline" id="sound-label">Suara Aktif</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- KONTEN UTAMA -->
+    <main class="max-w-6xl mx-auto px-4 pt-6 relative z-10">
+
+        <!-- VIEW 1: BERANDA (MENU 20 GAME) -->
+        <section id="home-view" class="transition-all duration-300">
+            <!-- Banner Sambutan -->
+            <div class="bg-white/95 rounded-3xl p-5 sm:p-6 mb-6 shadow-xl border-4 border-yellow-300 flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div class="text-center sm:text-left">
+                    <h2 class="text-2xl sm:text-3xl font-bold text-indigo-700 mb-1">Halo Adik-Adik Pintar! 👋😊</h2>
+                    <p class="text-slate-600 font-bold text-base sm:text-lg">Pilih salah satu permainan di bawah ini untuk mulai bermain sambil belajar!</p>
+                </div>
+                <button onclick="speak('Halo adik-adik pintar! Ayo pilih permainan yang kamu suka!')" class="btn-kid bg-amber-400 hover:bg-amber-500 text-amber-950 font-extrabold px-5 py-3 rounded-2xl text-base sm:text-lg flex items-center gap-2 shrink-0 border-2 border-amber-200">
+                    <span>🗣️</span> Dengarkan Sapaan
+                </button>
+            </div>
+
+            <!-- Grid 20 Kartu Game -->
+            <div id="games-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-5">
+                <!-- Kartu game akan diisi secara dinamis oleh JavaScript -->
+            </div>
+        </section>
+
+        <!-- VIEW 2: AREA BERMAIN GAME -->
+        <section id="game-view" class="hidden">
+            <div class="bg-white/95 rounded-3xl shadow-2xl border-4 border-sky-300 overflow-hidden max-w-4xl mx-auto">
+                
+                <!-- Bar Atas Game -->
+                <div class="bg-gradient-to-r from-sky-500 to-indigo-500 p-4 text-white flex flex-wrap items-center justify-between gap-3">
+                    <button onclick="backToMenu()" class="btn-kid bg-rose-500 hover:bg-rose-600 text-white px-4 py-2 rounded-2xl font-extrabold text-sm sm:text-base flex items-center gap-2 border-2 border-rose-300">
+                        <span>🏠</span> Kembali ke Menu
+                    </button>
+
+                    <div class="text-center flex-1">
+                        <span id="game-badge" class="bg-white/20 px-3 py-0.5 rounded-full text-xs font-bold uppercase tracking-wider">Game #1</span>
+                        <h2 id="game-title" class="text-xl sm:text-2xl font-bold">Judul Permainan</h2>
+                    </div>
+
+                    <!-- Indikator Progres Soal (5 Soal per Game) -->
+                    <div class="flex items-center gap-1.5 bg-black/20 px-3 py-1.5 rounded-2xl" id="progress-dots">
+                        <!-- Bintang progres soal -->
+                    </div>
+                </div>
+
+                <!-- Area Instruksi Suara -->
+                <div class="bg-amber-50 border-b-2 border-amber-200 p-4 flex items-center justify-between gap-3">
+                    <div class="flex items-center gap-3">
+                        <button onclick="repeatInstruction()" class="btn-kid w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-amber-400 hover:bg-amber-500 text-amber-950 flex items-center justify-center text-2xl sm:text-3xl shrink-0 border-2 border-amber-200" title="Ulangi Suara Instruksi">
+                            🔊
+                        </button>
+                        <div>
+                            <p class="text-xs font-extrabold text-amber-600 uppercase">Instruksi:</p>
+                            <p id="instruction-text" class="text-lg sm:text-2xl font-extrabold text-slate-800 leading-snug">
+                                Ayo mulai bermain!
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Kanvas Konten Pertanyaan & Pilihan Jawaban -->
+                <div id="game-stage" class="p-5 sm:p-8 min-h-[360px] flex flex-col items-center justify-center relative">
+                    <!-- Konten Soal Dinamis -->
+                </div>
+
+                <!-- Banner Umpan Balik (Benar / Salah) -->
+                <div id="feedback-bar" class="hidden px-6 py-4 text-center font-fredoka text-xl sm:text-2xl font-bold transition-all">
+                </div>
+            </div>
+        </section>
+
+        <!-- MODAL KEMENANGAN GAME (SELESAI 5 SOAL) -->
+        <div id="victory-modal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+            <div class="bg-white rounded-3xl max-w-md w-full p-6 sm:p-8 text-center border-8 border-amber-300 shadow-2xl animate-pop">
+                <div class="text-7xl mb-3 animate-bounce">🏆</div>
+                <h2 class="text-3xl sm:text-4xl font-bold text-amber-500 mb-2">Hore! Hebat Sekali!</h2>
+                <p id="victory-message" class="text-slate-600 font-bold text-lg mb-6">
+                    Kamu berhasil menyelesaikan permainan ini dan mendapatkan bintang!
+                </p>
+                <div class="flex justify-center gap-2 text-5xl mb-6">
+                    <span>⭐</span><span>⭐</span><span>⭐</span>
+                </div>
+                <div class="flex flex-col sm:flex-row gap-3 justify-center">
+                    <button onclick="replayCurrentGame()" class="btn-kid bg-sky-500 hover:bg-sky-600 text-white font-extrabold px-5 py-3.5 rounded-2xl text-lg flex-1 border-2 border-sky-300">
+                        🔄 Main Lagi
+                    </button>
+                    <button onclick="closeVictoryAndMenu()" class="btn-kid bg-emerald-500 hover:bg-emerald-600 text-white font-extrabold px-5 py-3.5 rounded-2xl text-lg flex-1 border-2 border-emerald-300">
+                        🏠 Pilih Game Lain
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        /* ==========================================================================
+           1. SISTEM AUDIO & SUARA (WEB AUDIO API & WEB SPEECH API)
+           ========================================================================== */
+        let soundEnabled = true;
+        let audioCtx = null;
+        let currentInstructionText = "";
+
+        function initAudioContext() {
+            if (!audioCtx) {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                if (AudioContext) audioCtx = new AudioContext();
+            }
+            if (audioCtx && audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
+
+        function toggleSound() {
+            soundEnabled = !soundEnabled;
+            const icon = document.getElementById('sound-icon');
+            const label = document.getElementById('sound-label');
+            const btn = document.getElementById('btn-sound');
+
+            if (soundEnabled) {
+                icon.textContent = '🔊';
+                label.textContent = 'Suara Aktif';
+                btn.classList.replace('bg-slate-500', 'bg-sky-500');
+                playClickSound();
+                speak("Suara diaktifkan");
+            } else {
+                icon.textContent = '🔇';
+                label.textContent = 'Suara Mati';
+                btn.classList.replace('bg-sky-500', 'bg-slate-500');
+                if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+            }
+        }
+
+        // Pengucapan Suara Bahasa Indonesia
+        function speak(text) {
+            currentInstructionText = text;
+            if (!soundEnabled || !('speechSynthesis' in window)) return;
+            window.speechSynthesis.cancel();
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'id-ID';
+            utterance.rate = 0.92; // Sedikit lebih lambat agar jelas untuk anak PAUD
+            utterance.pitch = 1.15; // Nada ramah & ceria
+            window.speechSynthesis.speak(utterance);
+        }
+
+        function repeatInstruction() {
+            playClickSound();
+            speak(currentInstructionText);
+        }
+
+        // Efek Suara Ceria Menggunakan Web Audio API
+        function playTone(freq, type, duration, startTime = 0, vol = 0.25) {
+            if (!soundEnabled) return;
+            initAudioContext();
+            if (!audioCtx) return;
+
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = type;
+            osc.frequency.setValueAtTime(freq, audioCtx.currentTime + startTime);
+
+            gain.gain.setValueAtTime(vol, audioCtx.currentTime + startTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + startTime + duration);
+
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            osc.start(audioCtx.currentTime + startTime);
+            osc.stop(audioCtx.currentTime + startTime + duration);
+        }
+
+        function playClickSound() {
+            playTone(520, 'sine', 0.1, 0, 0.2);
+        }
+
+        function playCorrectSound() {
+            // Arpeggio ceria C5 - E5 - G5 - C6
+            playTone(523.25, 'triangle', 0.15, 0, 0.3);
+            playTone(659.25, 'triangle', 0.15, 0.1, 0.3);
+            playTone(783.99, 'triangle', 0.15, 0.2, 0.3);
+            playTone(1046.50, 'triangle', 0.35, 0.3, 0.35);
+        }
+
+        function playWrongSound() {
+            // Nada lembut turun
+            playTone(300, 'sine', 0.2, 0, 0.25);
+            playTone(230, 'sine', 0.3, 0.15, 0.25);
+        }
+
+        function playWinFanfare() {
+            const notes = [523.25, 523.25, 523.25, 659.25, 783.99, 659.25, 1046.50];
+            const times = [0, 0.15, 0.3, 0.45, 0.65, 0.85, 1.05];
+            notes.forEach((n, i) => playTone(n, 'triangle', 0.25, times[i], 0.3));
+        }
+
+        /* ==========================================================================
+           2. EFEK KONFETI PERAYAAN
+           ========================================================================== */
+        const confettiCanvas = document.getElementById('confetti-canvas');
+        const ctx = confettiCanvas.getContext('2d');
+        let confettiParticles = [];
+        let confettiAnimId = null;
+
+        function resizeConfetti() {
+            confettiCanvas.width = window.innerWidth;
+            confettiCanvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeConfetti);
+        resizeConfetti();
+
+        function launchConfetti() {
+            const colors = ['#EF4444', '#F59E0B', '#10B981', '#3B82F6', '#8B5CF6', '#EC4899'];
+            confettiParticles = [];
+            for (let i = 0; i < 110; i++) {
+                confettiParticles.push({
+                    x: Math.random() * confettiCanvas.width,
+                    y: Math.random() * confettiCanvas.height - confettiCanvas.height,
+                    w: Math.random() * 12 + 6,
+                    h: Math.random() * 8 + 4,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    speedY: Math.random() * 4 + 2.5,
+                    speedX: (Math.random() - 0.5) * 3,
+                    angle: Math.random() * 360,
+                    spin: (Math.random() - 0.5) * 8
+                });
+            }
+            if (confettiAnimId) cancelAnimationFrame(confettiAnimId);
+            animateConfetti();
+        }
+
+        function animateConfetti() {
+            ctx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+            let active = false;
+            confettiParticles.forEach(p => {
+                p.y += p.speedY;
+                p.x += p.speedX;
+                p.angle += p.spin;
+                if (p.y < confettiCanvas.height + 20) active = true;
+
+                ctx.save();
+                ctx.translate(p.x, p.y);
+                ctx.rotate((p.angle * Math.PI) / 180);
+                ctx.fillStyle = p.color;
+                ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+                ctx.restore();
+            });
+            if (active) {
+                confettiAnimId = requestAnimationFrame(animateConfetti);
+            } else {
+                ctx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+            }
+        }
+
+        /* ==========================================================================
+           3. DATA & BANK SOAL LENGKAP 20 GAME EDUKASI PAUD
+           ========================================================================== */
+        const GAMES_CATALOG = [
+            { id: 1, title: "Tebak Warna Ceria", icon: "🎨", color: "from-rose-400 to-red-500", desc: "Mengenal warna dasar" },
+            { id: 2, title: "Hitung Buah Segar", icon: "🍎", color: "from-amber-400 to-orange-500", desc: "Berhitung angka 1 - 10" },
+            { id: 3, title: "Mengenal Huruf A-Z", icon: "🔤", color: "from-sky-400 to-blue-500", desc: "Huruf & gambar benda" },
+            { id: 4, title: "Suara Hewan Lucu", icon: "🦁", color: "from-lime-400 to-green-500", desc: "Tebak suara & ciri hewan" },
+            { id: 5, title: "Bentuk Geometri", icon: "🔺", color: "from-purple-400 to-indigo-500", desc: "Lingkaran, Persegi, Bintang" },
+            { id: 6, title: "Besar atau Kecil?", icon: "🐘", color: "from-teal-400 to-emerald-500", desc: "Membandingkan ukuran" },
+            { id: 7, title: "Panca Indera Kita", icon: "👀", color: "from-pink-400 to-rose-500", desc: "Fungsi indera tubuh" },
+            { id: 8, title: "Urutan Angka 1-5", icon: "🔢", color: "from-cyan-400 to-sky-500", desc: "Urutkan dari terkecil" },
+            { id: 9, title: "Kendaraan & Tempatnya", icon: "🚀", color: "from-indigo-400 to-blue-600", desc: "Darat, Laut, dan Udara" },
+            { id: 10, title: "Cuaca & Alam", icon: "🌈", color: "from-yellow-400 to-amber-500", desc: "Cerah, Hujan, Pelangi" },
+            { id: 11, title: "Bagian Tubuhku", icon: "🧒", color: "from-orange-400 to-red-500", desc: "Mengenal anggota tubuh" },
+            { id: 12, title: "Buah atau Sayur?", icon: "🥕", color: "from-green-400 to-emerald-600", desc: "Memilah makanan sehat" },
+            { id: 13, title: "Siang & Malam", icon: "🌞", color: "from-blue-400 to-indigo-600", desc: "Aktivitas pagi & malam" },
+            { id: 14, title: "Kebiasaan Baik", icon: "🪥", color: "from-emerald-400 to-teal-600", desc: "Perilaku bersih & terpuji" },
+            { id: 15, title: "Mencocokkan Bayangan", icon: "👤", color: "from-slate-500 to-slate-700", desc: "Tebak siluet yang tepat" },
+            { id: 16, title: "Banyak atau Sedikit?", icon: "🍓", color: "from-fuchsia-400 to-pink-600", desc: "Bandingkan jumlah benda" },
+            { id: 17, title: "Mengenal Profesi", icon: "👩‍⚕️", color: "from-sky-500 to-indigo-600", desc: "Dokter, Polisi, Koki, Guru" },
+            { id: 18, title: "Tebak Emosi Wajah", icon: "😊", color: "from-amber-400 to-yellow-500", desc: "Senang, Sedih, Marah" },
+            { id: 19, title: "Pola Warna Sederhana", icon: "🔴", color: "from-violet-400 to-purple-600", desc: "Lanjutkan urutan warna" },
+            { id: 20, title: "Rambu Lalu Lintas", icon: "🚦", color: "from-red-500 to-amber-500", desc: "Arti lampu lalu lintas" }
+        ];
+
+        // Status Penyelesaian Tersimpan di LocalStorage
+        let completedGames = JSON.parse(localStorage.getItem('paud_completed_games') || '[]');
+        let currentGameId = null;
+        let currentQuestionIndex = 0;
+        let gameQuestions = [];
+        let isAnswering = false;
+        let sequenceProgress = []; // Khusus Game 8 (Urutan Angka)
+
+        // Helper Acak Array
+        function shuffle(arr) {
+            return [...arr].sort(() => Math.random() - 0.5);
+        }
+
+        // Generator 5 Soal Dinamis untuk Masing-Masing dari 20 Game
+        function generateQuestionsForGame(gameId) {
+            switch (gameId) {
+                case 1: { // Tebak Warna Ceria
+                    const colors = [
+                        { name: "Merah", hex: "#EF4444", emoji: "🍎" },
+                        { name: "Biru", hex: "#3B82F6", emoji: "🐳" },
+                        { name: "Kuning", hex: "#FACC15", emoji: "🍌" },
+                        { name: "Hijau", hex: "#22C55E", emoji: "🐸" },
+                        { name: "Oranye", hex: "#F97316", emoji: "🍊" },
+                        { name: "Ungu", hex: "#A855F7", emoji: "🍇" }
+                    ];
+                    return shuffle(colors).slice(0, 5).map(target => {
+                        const opts = shuffle([target, ...shuffle(colors.filter(c => c.name !== target.name)).slice(0, 2)]);
+                        return {
+                            type: 'choice',
+                            speech: `Ayo pilih warna ${target.name}!`,
+                            prompt: `Manakah warna ${target.name}?`,
+                            options: opts.map(o => ({
+                                label: o.name,
+                                visual: `<div class="w-20 h-20 sm:w-24 sm:h-24 rounded-full mx-auto shadow-inner border-4 border-white" style="background:${o.hex}"></div>`,
+                                isCorrect: o.name === target.name
+                            }))
+                        };
+                    });
+                }
+
+                case 2: { // Hitung Buah Segar (1-10)
+                    const fruits = ["🍎", "🍌", "🍓", "🍊", "🍉", "🍍", "🍇", "🍑"];
+                    const counts = shuffle([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]).slice(0, 5);
+                    return counts.map(count => {
+                        const fruit = fruits[Math.floor(Math.random() * fruits.length)];
+                        const wrong1 = count === 10 ? 8 : count + 1;
+                        const wrong2 = count === 1 ? 3 : count - 1;
+                        const opts = shuffle([count, wrong1, wrong2]);
+                        return {
+                            type: 'choice',
+                            speech: `Ayo hitung ada berapa buah di gambar!`,
+                            prompt: `Ada berapa buah di bawah ini?`,
+                            displayHtml: `<div class="flex flex-wrap justify-center gap-2 sm:gap-3 bg-amber-50 p-4 sm:p-6 rounded-3xl border-4 border-amber-200 max-w-lg">${Array(count).fill(`<span class="text-4xl sm:text-5xl animate-pop">${fruit}</span>`).join('')}</div>`,
+                            options: opts.map(num => ({
+                                label: `${num} Buah`,
+                                visual: `<span class="text-4xl sm:text-5xl font-fredoka font-bold text-indigo-600">${num}</span>`,
+                                isCorrect: num === count
+                            }))
+                        };
+                    });
+                }
+
+                case 3: { // Mengenal Huruf A-Z
+                    const letters = [
+                        { l: "A", word: "Apel", emoji: "🍎" },
+                        { l: "B", word: "Bola", emoji: "⚽" },
+                        { l: "C", word: "Cicak", emoji: "🦎" },
+                        { l: "D", word: "Domba", emoji: "🐑" },
+                        { l: "E", word: "Elang", emoji: "🦅" },
+                        { l: "G", word: "Gajah", emoji: "🐘" },
+                        { l: "I", word: "Ikan", emoji: "🐟" },
+                        { l: "K", word: "Kucing", emoji: "🐱" },
+                        { l: "M", word: "Mobil", emoji: "🚗" },
+                        { l: "S", word: "Sapi", emoji: "🐄" }
+                    ];
+                    return shuffle(letters).slice(0, 5).map(target => {
+                        const opts = shuffle([target, ...shuffle(letters.filter(x => x.l !== target.l)).slice(0, 2)]);
+                        return {
+                            type: 'choice',
+                            speech: `Huruf ${target.l}! Benda apa yang berawalan huruf ${target.l}?`,
+                            prompt: `Pilih gambar untuk huruf "${target.l}"`,
+                            displayHtml: `<div class="w-24 h-24 sm:w-28 sm:h-28 rounded-3xl bg-sky-500 text-white flex items-center justify-center text-6xl sm:text-7xl font-fredoka font-bold shadow-lg border-4 border-sky-200">${target.l}</div>`,
+                            options: opts.map(o => ({
+                                label: o.word,
+                                visual: `<span class="text-5xl sm:text-6xl">${o.emoji}</span>`,
+                                isCorrect: o.l === target.l
+                            }))
+                        };
+                    });
+                }
+
+                case 4: { // Suara Hewan Lucu
+                    const animals = [
+                        { name: "Kucing", sound: "Meong... meong...", emoji: "🐱" },
+                        { name: "Anjing", sound: "Guk... guk... guk...", emoji: "🐶" },
+                        { name: "Sapi", sound: "Mooo... mooo...", emoji: "🐄" },
+                        { name: "Ayam Jago", sound: "Kukuruyuk!", emoji: "🐓" },
+                        { name: "Katak", sound: "Krok... krok... krok...", emoji: "🐸" },
+                        { name: "Singa", sound: "Roaarr! Mengaum keras!", emoji: "🦁" },
+                        { name: "Bebek", sound: "Kwek... kwek... kwek...", emoji: "🦆" }
+                    ];
+                    return shuffle(animals).slice(0, 5).map(target => {
+                        const opts = shuffle([target, ...shuffle(animals.filter(a => a.name !== target.name)).slice(0, 2)]);
+                        return {
+                            type: 'choice',
+                            speech: `Hewan apakah yang bersuara: ${target.sound}?`,
+                            prompt: `Siapa yang bersuara "${target.sound}"?`,
+                            displayHtml: `<div class="bg-lime-100 border-4 border-lime-400 px-6 py-4 rounded-3xl text-2xl sm:text-3xl font-extrabold text-lime-800">🗣️ "${target.sound}"</div>`,
+                            options: opts.map(o => ({
+                                label: o.name,
+                                visual: `<span class="text-5xl sm:text-6xl">${o.emoji}</span>`,
+                                isCorrect: o.name === target.name
+                            }))
+                        };
+                    });
+                }
+
+                case 5: { // Bentuk Geometri
+                    const shapes = [
+                        { name: "Lingkaran", svg: `<svg viewBox="0 0 100 100" class="w-20 h-20 mx-auto"><circle cx="50" cy="50" r="42" fill="#EF4444"/></svg>` },
+                        { name: "Persegi", svg: `<svg viewBox="0 0 100 100" class="w-20 h-20 mx-auto"><rect x="12" y="12" width="76" height="76" rx="8" fill="#3B82F6"/></svg>` },
+                        { name: "Segitiga", svg: `<svg viewBox="0 0 100 100" class="w-20 h-20 mx-auto"><polygon points="50,10 90,88 10,88" fill="#F59E0B"/></svg>` },
+                        { name: "Bintang", svg: `<svg viewBox="0 0 100 100" class="w-20 h-20 mx-auto"><polygon points="50,5 63,36 96,39 71,61 79,94 50,76 21,94 29,61 4,39 37,36" fill="#EAB308"/></svg>` },
+                        { name: "Hati", svg: `<svg viewBox="0 0 100 100" class="w-20 h-20 mx-auto"><path d="M50 88 C20 65 5 45 5 28 C5 14 16 5 28 5 C38 5 46 11 50 18 C54 11 62 5 72 5 C84 5 95 14 95 28 C95 45 80 65 50 88 Z" fill="#EC4899"/></svg>` }
+                    ];
+                    return shuffle(shapes).map(target => {
+                        const opts = shuffle([target, ...shuffle(shapes.filter(s => s.name !== target.name)).slice(0, 2)]);
+                        return {
+                            type: 'choice',
+                            speech: `Ayo cari bentuk ${target.name}!`,
+                            prompt: `Manakah bentuk ${target.name}?`,
+                            options: opts.map(o => ({
+                                label: o.name,
+                                visual: o.svg,
+                                isCorrect: o.name === target.name
+                            }))
+                        };
+                    });
+                }
+
+                case 6: { // Besar atau Kecil?
+                    const pairs = [
+                        { big: { name: "Gajah", emoji: "🐘" }, small: { name: "Tikus", emoji: "🐭" } },
+                        { big: { name: "Paus", emoji: "🐋" }, small: { name: "Ikan Kecil", emoji: "🐠" } },
+                        { big: { name: "Bus Sekolah", emoji: "🚌" }, small: { name: "Sepeda", emoji: "🚲" } },
+                        { big: { name: "Semangka", emoji: "🍉" }, small: { name: "Stroberi", emoji: "🍓" } },
+                        { big: { name: "Pohon Besar", emoji: "🌳" }, small: { name: "Bunga", emoji: "🌷" } }
+                    ];
+                    return pairs.map((p, idx) => {
+                        const askBig = idx % 2 === 0;
+                        const opts = shuffle([
+                            { label: p.big.name, visual: `<span class="text-7xl sm:text-8xl">${p.big.emoji}</span>`, isCorrect: askBig },
+                            { label: p.small.name, visual: `<span class="text-4xl sm:text-5xl">${p.small.emoji}</span>`, isCorrect: !askBig }
+                        ]);
+                        return {
+                            type: 'choice',
+                            speech: askBig ? `Manakah yang ukurannya lebih BESAR?` : `Manakah yang ukurannya lebih KECIL?`,
+                            prompt: askBig ? `Pilih yang lebih BESAR!` : `Pilih yang lebih KECIL!`,
+                            options: opts
+                        };
+                    });
+                }
+
+                case 7: { // Panca Indera Kita
+                    const senses = [
+                        { part: "Mata", func: "Melihat pemandangan indah", emoji: "👀" },
+                        { part: "Hidung", func: "Mencium wangi bunga", emoji: "👃" },
+                        { part: "Telinga", func: "Mendengar musik & suara", emoji: "👂" },
+                        { part: "Lidah", func: "Merasakan manis es krim", emoji: "👅" },
+                        { part: "Kulit / Tangan", func: "Meraba halus bulu kucing", emoji: "✋" }
+                    ];
+                    return shuffle(senses).map(target => {
+                        const opts = shuffle([target, ...shuffle(senses.filter(s => s.part !== target.part)).slice(0, 2)]);
+                        return {
+                            type: 'choice',
+                            speech: `Kita menggunakan apa untuk ${target.func}?`,
+                            prompt: `Indera untuk ${target.func}?`,
+                            options: opts.map(o => ({
+                                label: o.part,
+                                visual: `<span class="text-5xl sm:text-6xl">${o.emoji}</span>`,
+                                isCorrect: o.part === target.part
+                            }))
+                        };
+                    });
+                }
+
+                case 8: { // Urutan Angka 1-5 (Interaktif Klik Berurutan)
+                    const themes = [
+                        { name: "Balok Bintang", icon: "⭐" },
+                        { name: "Balok Apel", icon: "🍎" },
+                        { name: "Balok Mobil", icon: "🚗" },
+                        { name: "Balok Balon", icon: "🎈" },
+                        { name: "Balok Roket", icon: "🚀" }
+                    ];
+                    return themes.map(t => ({
+                        type: 'sequence',
+                        speech: `Ayo tekan angka secara berurutan dari 1 sampai 5!`,
+                        prompt: `Urutkan ${t.name} dari angka 1 sampai 5!`,
+                        icon: t.icon,
+                        numbers: shuffle([1, 2, 3, 4, 5])
+                    }));
+                }
+
+                case 9: { // Kendaraan Darat, Laut, Udara
+                    const vehicles = [
+                        { place: "Udara (Terbang di langit)", name: "Pesawat", emoji: "✈️" },
+                        { place: "Laut (Berlayar di air)", name: "Kapal Laut", emoji: "🚢" },
+                        { place: "Darat (Berjalan di jalan raya)", name: "Mobil", emoji: "🚗" },
+                        { place: "Udara (Terbang tinggi)", name: "Helikopter", emoji: "🚁" },
+                        { place: "Darat (Berjalan di rel)", name: "Kereta Api", emoji: "🚂" }
+                    ];
+                    const allChoices = [
+                        { name: "Pesawat", emoji: "✈️" },
+                        { name: "Kapal Laut", emoji: "🚢" },
+                        { name: "Mobil", emoji: "🚗" },
+                        { name: "Helikopter", emoji: "🚁" },
+                        { name: "Kereta Api", emoji: "🚂" },
+                        { name: "Perahu Layar", emoji: "⛵" }
+                    ];
+                    return vehicles.map(target => {
+                        const opts = shuffle([
+                            { name: target.name, emoji: target.emoji },
+                            ...shuffle(allChoices.filter(c => c.name !== target.name)).slice(0, 2)
+                        ]);
+                        return {
+                            type: 'choice',
+                            speech: `Pilih kendaraan yang bergerak di ${target.place}!`,
+                            prompt: `Kendaraan di ${target.place}?`,
+                            options: opts.map(o => ({
+                                label: o.name,
+                                visual: `<span class="text-5xl sm:text-6xl">${o.emoji}</span>`,
+                                isCorrect: o.name === target.name
+                            }))
+                        };
+                    });
+                }
+
+                case 10: { // Cuaca & Alam
+                    const weathers = [
+                        { name: "Cerah", desc: "Matahari bersinar terang", emoji: "☀️" },
+                        { name: "Hujan", desc: "Air turun dari awan, pakai payung", emoji: "🌧️" },
+                        { name: "Pelangi", desc: "Warna-warni indah setelah hujan", emoji: "🌈" },
+                        { name: "Berawan", desc: "Langit tertutup banyak awan", emoji: "⛅" },
+                        { name: "Malam Berbintang", desc: "Bulan dan bintang bersinar", emoji: "🌙" }
+                    ];
+                    return shuffle(weathers).map(target => {
+                        const opts = shuffle([target, ...shuffle(weathers.filter(w => w.name !== target.name)).slice(0, 2)]);
+                        return {
+                            type: 'choice',
+                            speech: `Cuaca apakah ini: ${target.desc}?`,
+                            prompt: `${target.desc}`,
+                            options: opts.map(o => ({
+                                label: o.name,
+                                visual: `<span class="text-5xl sm:text-6xl">${o.emoji}</span>`,
+                                isCorrect: o.name === target.name
+                            }))
+                        };
+                    });
+                }
+
+                case 11: { // Bagian Tubuhku
+                    const parts = [
+                        { name: "Kepala", desc: "Tempat topi dipakai", emoji: "👦" },
+                        { name: "Tangan", desc: "Untuk memegang & melambai", emoji: "✋" },
+                        { name: "Kaki", desc: "Untuk berjalan & berlari", emoji: "🦶" },
+                        { name: "Gigi", desc: "Untuk mengunyah makanan", emoji: "🦷" },
+                        { name: "Mata", desc: "Untuk melihat buku cerita", emoji: "👁️" }
+                    ];
+                    return shuffle(parts).map(target => {
+                        const opts = shuffle([target, ...shuffle(parts.filter(p => p.name !== target.name)).slice(0, 2)]);
+                        return {
+                            type: 'choice',
+                            speech: `Pilih anggota tubuh: ${target.name}! ${target.desc}.`,
+                            prompt: `Manakah gambar ${target.name}?`,
+                            options: opts.map(o => ({
+                                label: o.name,
+                                visual: `<span class="text-5xl sm:text-6xl">${o.emoji}</span>`,
+                                isCorrect: o.name === target.name
+                            }))
+                        };
+                    });
+                }
+
+                case 12: { // Buah atau Sayur?
+                    const items = [
+                        { ask: "BUAH", correct: { name: "Pisang", emoji: "🍌" }, wrong: { name: "Wortel", emoji: "🥕" } },
+                        { ask: "SAYUR", correct: { name: "Brokoli", emoji: "🥦" }, wrong: { name: "Anggur", emoji: "🍇" } },
+                        { ask: "BUAH", correct: { name: "Semangka", emoji: "🍉" }, wrong: { name: "Jagung", emoji: "🌽" } },
+                        { ask: "SAYUR", correct: { name: "Terong", emoji: "🍆" }, wrong: { name: "Jeruk", emoji: "🍊" } },
+                        { ask: "BUAH", correct: { name: "Stroberi", emoji: "🍓" }, wrong: { name: "Cabai", emoji: "🌶️" } }
+                    ];
+                    return items.map(item => ({
+                        type: 'choice',
+                        speech: `Ayo pilih manakah yang termasuk ${item.ask}!`,
+                        prompt: `Manakah yang termasuk ${item.ask}?`,
+                        options: shuffle([
+                            { label: item.correct.name, visual: `<span class="text-6xl">${item.correct.emoji}</span>`, isCorrect: true },
+                            { label: item.wrong.name, visual: `<span class="text-6xl">${item.wrong.emoji}</span>`, isCorrect: false }
+                        ])
+                    }));
+                }
+
+                case 13: { // Siang & Malam
+                    const times = [
+                        { time: "MALAM HARI", correct: { name: "Tidur Nyenyak", emoji: "🛌" }, wrong: { name: "Bermain di Taman", emoji: "🛝" } },
+                        { time: "SIANG HARI", correct: { name: "Berangkat Sekolah", emoji: "🎒" }, wrong: { name: "Melihat Bintang", emoji: "🌠" } },
+                        { time: "MALAM HARI", correct: { name: "Bulan Bersinar", emoji: "🌙" }, wrong: { name: "Matahari Terik", emoji: "☀️" } },
+                        { time: "SIANG HARI", correct: { name: "Menjemur Pakaian", emoji: "👕" }, wrong: { name: "Menyalakan Lampu Tidur", emoji: "🛋️" } },
+                        { time: "MALAM HARI", correct: { name: "Burung Hantu Bangun", emoji: "🦉" }, wrong: { name: "Kupu-kupu Terbang", emoji: "🦋" } }
+                    ];
+                    return times.map(t => ({
+                        type: 'choice',
+                        speech: `Kegiatan apa yang dilakukan pada ${t.time}?`,
+                        prompt: `Pilih kegiatan di ${t.time}!`,
+                        options: shuffle([
+                            { label: t.correct.name, visual: `<span class="text-6xl">${t.correct.emoji}</span>`, isCorrect: true },
+                            { label: t.wrong.name, visual: `<span class="text-6xl">${t.wrong.emoji}</span>`, isCorrect: false }
+                        ])
+                    }));
+                }
+
+                case 14: { // Kebiasaan Baik & Bersih
+                    const habits = [
+                        { q: "Sebelum makan kita harus...", good: { name: "Cuci Tangan", emoji: "🧼" }, bad: { name: "Tangan Kotor", emoji: "💩" } },
+                        { q: "Agar gigi sehat & bersih kita...", good: { name: "Gosok Gigi", emoji: "🪥" }, bad: { name: "Makan Permen Terus", emoji: "🍭" } },
+                        { q: "Membuang kulit pisang harus ke...", good: { name: "Tempat Sampah", emoji: "🗑️" }, bad: { name: "Sembarang Jalan", emoji: "🛣️" } },
+                        { q: "Jika ada teman terjatuh kita...", good: { name: "Membantu Teman", emoji: "🤝" }, bad: { name: "Menertawakan", emoji: "😝" } },
+                        { q: "Agar tubuh segar setiap pagi kita...", good: { name: "Mandi Bersih", emoji: "🚿" }, bad: { name: "Malas Mandi", emoji: "🛌" } }
+                    ];
+                    return habits.map(h => ({
+                        type: 'choice',
+                        speech: `${h.q} Ayo pilih kebiasaan yang baik!`,
+                        prompt: h.q,
+                        options: shuffle([
+                            { label: h.good.name, visual: `<span class="text-6xl">${h.good.emoji}</span>`, isCorrect: true },
+                            { label: h.bad.name, visual: `<span class="text-6xl">${h.bad.emoji}</span>`, isCorrect: false }
+                        ])
+                    }));
+                }
+
+                case 15: { // Mencocokkan Bayangan
+                    const shadows = [
+                        { name: "Kelinci", emoji: "🐇" },
+                        { name: "Kupu-Kupu", emoji: "🦋" },
+                        { name: "Kura-Kura", emoji: "🐢" },
+                        { name: "Dinosaurus", emoji: "🦕" },
+                        { name: "Gajah", emoji: "🐘" },
+                        { name: "Bebek", emoji: "🦆" }
+                    ];
+                    return shuffle(shadows).slice(0, 5).map(target => {
+                        const opts = shuffle([target, ...shuffle(shadows.filter(s => s.name !== target.name)).slice(0, 2)]);
+                        return {
+                            type: 'choice',
+                            speech: `Coba tebak, bayangan hewan apakah ini?`,
+                            prompt: `Ini bayangan hewan apa ya?`,
+                            displayHtml: `<div class="w-32 h-32 rounded-3xl bg-amber-100 border-4 border-amber-300 flex items-center justify-center shadow-inner"><span class="text-7xl silhouette">${target.emoji}</span></div>`,
+                            options: opts.map(o => ({
+                                label: o.name,
+                                visual: `<span class="text-5xl sm:text-6xl">${o.emoji}</span>`,
+                                isCorrect: o.name === target.name
+                            }))
+                        };
+                    });
+                }
+
+                case 16: { // Lebih Banyak atau Sedikit?
+                    const rounds = [
+                        { askMore: true, a: 6, b: 2, emoji: "🍓" },
+                        { askMore: false, a: 1, b: 5, emoji: "🍪" },
+                        { askMore: true, a: 7, b: 3, emoji: "⭐" },
+                        { askMore: false, a: 2, b: 6, emoji: "🎈" },
+                        { askMore: true, a: 5, b: 2, emoji: "🧁" }
+                    ];
+                    return rounds.map(r => {
+                        const groupA = `<div class="flex flex-wrap justify-center gap-1">${Array(r.a).fill(`<span class="text-3xl">${r.emoji}</span>`).join('')}</div>`;
+                        const groupB = `<div class="flex flex-wrap justify-center gap-1">${Array(r.b).fill(`<span class="text-3xl">${r.emoji}</span>`).join('')}</div>`;
+                        return {
+                            type: 'choice',
+                            speech: r.askMore ? `Pilih kotak yang jumlahnya LEBIH BANYAK!` : `Pilih kotak yang jumlahnya LEBIH SEDIKIT!`,
+                            prompt: r.askMore ? `Manakah yang LEBIH BANYAK?` : `Manakah yang LEBIH SEDIKIT?`,
+                            options: shuffle([
+                                { label: `${r.a} Benda`, visual: groupA, isCorrect: r.askMore ? r.a > r.b : r.a < r.b },
+                                { label: `${r.b} Benda`, visual: groupB, isCorrect: r.askMore ? r.b > r.a : r.b < r.a }
+                            ])
+                        };
+                    });
+                }
+
+                case 17: { // Mengenal Profesi
+                    const jobs = [
+                        { name: "Dokter", desc: "Mengobati orang sakit", emoji: "👩‍⚕️" },
+                        { name: "Pemadam Kebakaran", desc: "Memadamkan api", emoji: "🧑‍🚒" },
+                        { name: "Koki", desc: "Memasak makanan lezat", emoji: "🧑‍🍳" },
+                        { name: "Polisi", desc: "Menjaga ketertiban lalu lintas", emoji: "👮" },
+                        { name: "Petani", desc: "Menanam padi di sawah", emoji: "🧑‍🌾" }
+                    ];
+                    return shuffle(jobs).map(target => {
+                        const opts = shuffle([target, ...shuffle(jobs.filter(j => j.name !== target.name)).slice(0, 2)]);
+                        return {
+                            type: 'choice',
+                            speech: `Siapakah profesi yang bertugas ${target.desc}?`,
+                            prompt: `Tugasnya: ${target.desc}`,
+                            options: opts.map(o => ({
+                                label: o.name,
+                                visual: `<span class="text-5xl sm:text-6xl">${o.emoji}</span>`,
+                                isCorrect: o.name === target.name
+                            }))
+                        };
+                    });
+                }
+
+                case 18: { // Tebak Emosi Wajah
+                    const emotions = [
+                        { name: "Senang", desc: "Tersenyum gembira", emoji: "😄" },
+                        { name: "Sedih", desc: "Menangis keluar air mata", emoji: "😢" },
+                        { name: "Marah", desc: "Wajah cemberut kesal", emoji: "😠" },
+                        { name: "Terkejut", desc: "Kaget membuka mulut", emoji: "😲" },
+                        { name: "Mengantuk", desc: "Ingin segera tidur", emoji: "😴" }
+                    ];
+                    return shuffle(emotions).map(target => {
+                        const opts = shuffle([target, ...shuffle(emotions.filter(e => e.name !== target.name)).slice(0, 2)]);
+                        return {
+                            type: 'choice',
+                            speech: `Ayo pilih wajah dengan ekspresi ${target.name}!`,
+                            prompt: `Pilih wajah yang sedang ${target.name}!`,
+                            options: opts.map(o => ({
+                                label: o.name,
+                                visual: `<span class="text-6xl sm:text-7xl">${o.emoji}</span>`,
+                                isCorrect: o.name === target.name
+                            }))
+                        };
+                    });
+                }
+
+                case 19: { // Pola Warna Sederhana
+                    const patterns = [
+                        { seq: ["🔴", "🔵", "🔴"], ans: { name: "Merah", emoji: "🔴" }, wrong: { name: "Biru", emoji: "🔵" }, ansName: "Biru", realAns: "🔵", realWrong: "🔴" },
+                        { seq: ["🟡", "🟢", "🟡"], ansName: "Hijau", realAns: "🟢", ansWrongName: "Kuning", realWrong: "🟡" },
+                        { seq: ["🍎", "🍌", "🍎"], ansName: "Pisang", realAns: "🍌", ansWrongName: "Apel", realWrong: "🍎" },
+                        { seq: ["⭐", "🌙", "⭐"], ansName: "Bulan", realAns: "🌙", ansWrongName: "Bintang", realWrong: "⭐" },
+                        { seq: ["🟣", "🟠", "🟣"], ansName: "Oranye", realAns: "🟠", ansWrongName: "Ungu", realWrong: "🟣" }
+                    ];
+                    return patterns.map((p, idx) => {
+                        // Koreksi item pertama agar konsisten
+                        const correctEmoji = idx === 0 ? "🔵" : p.realAns;
+                        const correctLabel = idx === 0 ? "Biru" : p.ansName;
+                        const wrongEmoji = idx === 0 ? "🔴" : p.realWrong;
+                        const wrongLabel = idx === 0 ? "Merah" : p.ansWrongName;
+
+                        return {
+                            type: 'choice',
+                            speech: `Lengkapi pola berikutnya setelah ${p.seq.join(', ')}!`,
+                            prompt: `Apa gambar selanjutnya dalam pola ini?`,
+                            displayHtml: `
+                                <div class="flex items-center gap-3 sm:gap-4 bg-violet-100 px-6 py-4 rounded-3xl border-4 border-violet-300">
+                                    ${p.seq.map(item => `<span class="text-4xl sm:text-5xl">${item}</span>`).join('')}
+                                    <span class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-white border-4 border-dashed border-violet-500 flex items-center justify-center text-3xl font-bold text-violet-600">?</span>
+                                </div>`,
+                            options: shuffle([
+                                { label: correctLabel, visual: `<span class="text-5xl sm:text-6xl">${correctEmoji}</span>`, isCorrect: true },
+                                { label: wrongLabel, visual: `<span class="text-5xl sm:text-6xl">${wrongEmoji}</span>`, isCorrect: false }
+                            ])
+                        };
+                    });
+                }
+
+                case 20: { // Rambu Lalu Lintas Dasar
+                    const signs = [
+                        { color: "#EF4444", title: "Lampu Merah", meaning: "BERHENTI", desc: "Kendaraan harus berhenti", emoji: "🛑" },
+                        { color: "#FACC15", title: "Lampu Kuning", meaning: "HATI-HATI", desc: "Bersiap-siap pelan", emoji: "⚠️" },
+                        { color: "#22C55E", title: "Lampu Hijau", meaning: "JALAN", desc: "Kendaraan boleh berjalan", emoji: "🚗" },
+                        { color: "#3B82F6", title: "Zebra Cross", meaning: "TEMPAT MENYEBERANG", desc: "Garis putih untuk pejalan kaki", emoji: "🚶" },
+                        { color: "#EF4444", title: "Dilarang Parkir (P Coret)", meaning: "DILARANG PARKIR", desc: "Tidak boleh berhenti lama", emoji: "🚫" }
+                    ];
+                    return signs.map(target => {
+                        const others = shuffle(signs.filter(s => s.meaning !== target.meaning)).slice(0, 2);
+                        const opts = shuffle([target, ...others]);
+                        return {
+                            type: 'choice',
+                            speech: `Apa arti dari ${target.title}?`,
+                            prompt: `Apa arti rambu "${target.title}"?`,
+                            displayHtml: `<div class="w-24 h-24 rounded-full flex items-center justify-center text-5xl shadow-lg border-4 border-white" style="background:${target.color}">${target.emoji}</div>`,
+                            options: opts.map(o => ({
+                                label: o.meaning,
+                                visual: `<span class="text-3xl">${o.emoji}</span>`,
+                                isCorrect: o.meaning === target.meaning
+                            }))
+                        };
+                    });
+                }
+            }
+        }
+
+        /* ==========================================================================
+           4. RENDER BERANDA & NAVIGASI GAME
+           ========================================================================== */
+        function renderHomeMenu() {
+            const grid = document.getElementById('games-grid');
+            grid.innerHTML = '';
+
+            GAMES_CATALOG.forEach(game => {
+                const isDone = completedGames.includes(game.id);
+                const card = document.createElement('button');
+                card.onclick = () => startGame(game.id);
+                card.className = `btn-kid relative bg-white rounded-3xl p-4 text-left border-4 ${isDone ? 'border-amber-400' : 'border-white'} shadow-lg flex flex-col justify-between overflow-hidden group`;
+
+                card.innerHTML = `
+                    <div class="flex items-start justify-between w-full mb-3">
+                        <div class="w-16 h-16 rounded-2xl bg-gradient-to-br ${game.color} flex items-center justify-center text-4xl shadow-md group-hover:scale-110 transition-transform">
+                            ${game.icon}
+                        </div>
+                        <div class="flex flex-col items-end">
+                            <span class="text-xs font-extrabold px-2.5 py-1 rounded-full bg-slate-100 text-slate-600">#${game.id}</span>
+                            <span class="text-2xl mt-1">${isDone ? '⭐' : '☆'}</span>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="text-lg sm:text-xl font-bold text-slate-800 leading-snug mb-1">${game.title}</h3>
+                        <p class="text-xs sm:text-sm font-bold text-slate-500">${game.desc}</p>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+
+            document.getElementById('total-stars').textContent = `${completedGames.length} / 20`;
+        }
+
+        function startGame(gameId) {
+            playClickSound();
+            currentGameId = gameId;
+            currentQuestionIndex = 0;
+            gameQuestions = generateQuestionsForGame(gameId);
+
+            const gameMeta = GAMES_CATALOG.find(g => g.id === gameId);
+            document.getElementById('game-badge').textContent = `Game #${gameMeta.id} dari 20`;
+            document.getElementById('game-title').textContent = `${gameMeta.icon} ${gameMeta.title}`;
+
+            document.getElementById('home-view').classList.add('hidden');
+            document.getElementById('game-view').classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            renderProgressDots();
+            renderQuestion();
+        }
+
+        function backToMenu() {
+            playClickSound();
+            if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+            document.getElementById('game-view').classList.add('hidden');
+            document.getElementById('home-view').classList.remove('hidden');
+            renderHomeMenu();
+        }
+
+        function renderProgressDots() {
+            const container = document.getElementById('progress-dots');
+            container.innerHTML = '';
+            for (let i = 0; i < 5; i++) {
+                const star = document.createElement('span');
+                star.className = 'text-xl sm:text-2xl transition-transform';
+                star.textContent = i < currentQuestionIndex ? '⭐' : '⚪';
+                container.appendChild(star);
+            }
+        }
+
+        /* ==========================================================================
+           5. LOGIKA TAMPILAN SOAL & VALIDASI JAWABAN
+           ========================================================================== */
+        function renderQuestion() {
+            isAnswering = false;
+            const q = gameQuestions[currentQuestionIndex];
+            const stage = document.getElementById('game-stage');
+            const feedbackBar = document.getElementById('feedback-bar');
+            feedbackBar.classList.add('hidden');
+
+            document.getElementById('instruction-text').textContent = q.prompt;
+            speak(q.speech);
+
+            // Tipe 1: Game Urutan Angka 1-5 (Game 8)
+            if (q.type === 'sequence') {
+                sequenceProgress = [];
+                stage.innerHTML = `
+                    <div class="text-center mb-6 animate-pop">
+                        <p class="text-lg font-extrabold text-sky-700 mb-3">Urutan Terpilih:</p>
+                        <div id="seq-slots" class="flex justify-center gap-2 sm:gap-3">
+                            ${[1, 2, 3, 4, 5].map(n => `
+                                <div id="slot-${n}" class="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl border-4 border-dashed border-sky-300 bg-sky-50 flex items-center justify-center text-2xl sm:text-3xl font-fredoka font-bold text-sky-300">
+                                    ?
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                    <div class="flex flex-wrap justify-center gap-3 sm:gap-5 animate-pop">
+                        ${q.numbers.map(num => `
+                            <button id="seq-btn-${num}" onclick="handleSequenceClick(${num})" class="btn-kid w-20 h-24 sm:w-24 sm:h-28 rounded-3xl bg-gradient-to-b from-amber-300 to-amber-500 border-4 border-amber-200 flex flex-col items-center justify-center shadow-lg">
+                                <span class="text-2xl sm:text-3xl">${q.icon}</span>
+                                <span class="text-3xl sm:text-4xl font-fredoka font-bold text-amber-950">${num}</span>
+                            </button>
+                        `).join('')}
+                    </div>
+                `;
+                return;
+            }
+
+            // Tipe 2: Pilihan Bergambar Besar (Default untuk 19 Game)
+            const colsClass = q.options.length === 2 ? 'grid-cols-1 sm:grid-cols-2 max-w-xl' : 'grid-cols-1 sm:grid-cols-3 max-w-3xl';
+
+            stage.innerHTML = `
+                ${q.displayHtml ? `<div class="mb-6 animate-pop">${q.displayHtml}</div>` : ''}
+                <div class="grid ${colsClass} gap-4 sm:gap-6 w-full animate-pop">
+                    ${q.options.map((opt, idx) => `
+                        <button onclick="handleChoiceClick(this, ${opt.isCorrect}, '${opt.label.replace(/'/g, "\\'")}')" 
+                            class="btn-kid bg-gradient-to-b from-white to-sky-50 hover:to-amber-50 border-4 border-sky-300 hover:border-amber-400 rounded-3xl p-5 sm:p-6 flex flex-col items-center justify-center gap-3 min-h-[150px] sm:min-h-[180px]">
+                            <div class="flex items-center justify-center">${opt.visual}</div>
+                            <span class="text-xl sm:text-2xl font-fredoka font-bold text-slate-800 text-center">${opt.label}</span>
+                        </button>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        function handleChoiceClick(btnEl, isCorrect, labelText) {
+            if (isAnswering) return;
+
+            if (isCorrect) {
+                isAnswering = true;
+                playCorrectSound();
+                btnEl.classList.remove('border-sky-300', 'from-white', 'to-sky-50');
+                btnEl.classList.add('border-emerald-500', 'bg-emerald-100', 'scale-105');
+
+                const praises = ["Hebat sekali!", "Pintar!", "Benar sekali!", "Luar biasa!", "Bagus sekali!"];
+                const praise = praises[Math.floor(Math.random() * praises.length)];
+                showFeedback(true, `🎉 ${praise} Jawabanmu benar: ${labelText}!`);
+                speak(`${praise} ${labelText}!`);
+
+                currentQuestionIndex++;
+                renderProgressDots();
+
+                setTimeout(() => {
+                    if (currentQuestionIndex >= 5) {
+                        finishGame();
+                    } else {
+                        renderQuestion();
+                    }
+                }, 1700);
+            } else {
+                playWrongSound();
+                btnEl.classList.add('animate-shake', 'border-rose-400', 'bg-rose-50');
+                setTimeout(() => btnEl.classList.remove('animate-shake'), 450);
+
+                showFeedback(false, `🤗 Ups, kurang tepat. Ayo coba pilih lagi!`);
+                speak("Ups, coba pilih yang lain ya!");
+            }
+        }
+
+        function handleSequenceClick(num) {
+            if (isAnswering) return;
+            const expected = sequenceProgress.length + 1;
+
+            if (num === expected) {
+                playTone(440 + num * 80, 'triangle', 0.15, 0, 0.25);
+                sequenceProgress.push(num);
+
+                const btn = document.getElementById(`seq-btn-${num}`);
+                btn.classList.add('opacity-30', 'pointer-events-none', 'scale-90');
+
+                const slot = document.getElementById(`slot-${num}`);
+                slot.textContent = num;
+                slot.classList.remove('border-dashed', 'border-sky-300', 'text-sky-300', 'bg-sky-50');
+                slot.classList.add('border-emerald-500', 'bg-emerald-400', 'text-white', 'animate-pop');
+
+                if (sequenceProgress.length === 5) {
+                    isAnswering = true;
+                    playCorrectSound();
+                    showFeedback(true, "🎉 Hebat! Urutan 1, 2, 3, 4, 5 sudah benar!");
+                    speak("Hebat! Urutan satu sampai lima sudah benar!");
+                    currentQuestionIndex++;
+                    renderProgressDots();
+
+                    setTimeout(() => {
+                        if (currentQuestionIndex >= 5) {
+                            finishGame();
+                        } else {
+                            renderQuestion();
+                        }
+                    }, 1800);
+                }
+            } else {
+                playWrongSound();
+                const btn = document.getElementById(`seq-btn-${num}`);
+                btn.classList.add('animate-shake');
+                setTimeout(() => btn.classList.remove('animate-shake'), 450);
+                showFeedback(false, `🤗 Ayo cari angka ${expected} terlebih dahulu!`);
+                speak(`Ayo cari angka ${expected} dulu ya!`);
+            }
+        }
+
+        function showFeedback(isSuccess, message) {
+            const bar = document.getElementById('feedback-bar');
+            bar.classList.remove('hidden', 'bg-emerald-500', 'bg-rose-500', 'text-white');
+            bar.classList.add(isSuccess ? 'bg-emerald-500' : 'bg-rose-500', 'text-white');
+            bar.textContent = message;
+        }
+
+        /* ==========================================================================
+           6. PENYELESAIAN GAME & SIMPAN PROGRES BINTANG
+           ========================================================================== */
+        function finishGame() {
+            if (!completedGames.includes(currentGameId)) {
+                completedGames.push(currentGameId);
+                localStorage.setItem('paud_completed_games', JSON.stringify(completedGames));
+            }
+
+            playWinFanfare();
+            launchConfetti();
+
+            const gameMeta = GAMES_CATALOG.find(g => g.id === currentGameId);
+            document.getElementById('victory-message').textContent =
+                `Kamu berhasil menyelesaikan "${gameMeta.title}" dan mendapatkan 1 Bintang Emas!`;
+            document.getElementById('victory-modal').classList.remove('hidden');
+            speak(`Hore! Hebat sekali! Kamu berhasil menyelesaikan permainan ${gameMeta.title}!`);
+        }
+
+        function replayCurrentGame() {
+            document.getElementById('victory-modal').classList.add('hidden');
+            startGame(currentGameId);
+        }
+
+        function closeVictoryAndMenu() {
+            document.getElementById('victory-modal').classList.add('hidden');
+            backToMenu();
+        }
+
+        // Inisialisasi Awal Saat Halaman Dimuat
+        window.onload = function () {
+            renderHomeMenu();
+        };
+    </script>
+</body>
+</html>
